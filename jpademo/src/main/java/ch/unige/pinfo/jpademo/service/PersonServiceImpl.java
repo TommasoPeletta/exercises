@@ -16,6 +16,13 @@ public class PersonServiceImpl implements PersonService {
 
 	@PersistenceContext
 	EntityManager em;
+
+	@Override
+	public List<Person> getAll() {
+		List<Person> people = em.createQuery("SELECT a FROM Person a", Person.class).getResultList();
+		return people;
+
+	}
 	
 	@Override
 	public boolean createPerson(Person p) {
@@ -28,13 +35,6 @@ public class PersonServiceImpl implements PersonService {
 	}
 
 	@Override
-	public List<Person> getAll() {
-		List<Person> people = em.createQuery("SELECT a FROM Person a", Person.class).getResultList();
-		return people;
-
-	}
-
-	@Override
 	public Optional<Person> getByNames(String first, String last) {
 		List<Person> people = em.createQuery("SELECT a FROM Person a WHERE LOWER(a.firstname) = LOWER('"+first+"') AND LOWER(a.lastname) = LOWER('"+last+"')", Person.class).getResultList();
 		if(people.size() > 0) {
@@ -42,6 +42,22 @@ public class PersonServiceImpl implements PersonService {
 		}
 		
 		return Optional.empty();
+	}
+
+	@Override
+	public Optional<Person> getById(long id) {
+		List<Person> people = em.createQuery("SELECT a FROM Person a WHERE a.id = "+id, Person.class).getResultList();
+		if(people.size() > 0) {
+			return Optional.of(people.get(0));
+		}
+		return Optional.empty();
+	}
+
+	@Override
+	public void deletePerson(Person person) {
+		// gotta merge first to get the person into the manager context
+		// https://stackoverflow.com/a/17027553/3793083
+		em.remove(em.contains(person) ? person : em.merge(person));
 	}
 	
 }

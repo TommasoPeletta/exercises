@@ -58,5 +58,14 @@ public class Person implements Serializable {
 	}
 	
 	
+	@Override
+	public String toString() {
+		String str = "";
+		str += id;
+		str += " " + firstname;
+		str += " " + lastname;
+		return str;
+	}
+	
 	
 }
