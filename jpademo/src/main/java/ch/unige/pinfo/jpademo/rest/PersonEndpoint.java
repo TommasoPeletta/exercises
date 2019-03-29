@@ -22,6 +22,10 @@ public class PersonEndpoint {
 	@Inject
 	private PersonService personservice;
 	
+	
+	public void setPersonservice(PersonService ps) {
+		personservice = ps;
+	}
 
 	@GET
 	@Path("/")
@@ -35,13 +39,13 @@ public class PersonEndpoint {
 	@GET
 	@Path("/new/{firstname}/{lastname}")
 	@Produces("text/plain")
-	public Response addNewPerson(@PathParam("firstname") String firstname, 
+	public String addNewPerson(@PathParam("firstname") String firstname, 
 			@PathParam("lastname") String lastname) {
 		Person p = new Person(firstname, lastname);
 		if(personservice.createPerson(p)) {
-			return Response.ok("You inserted "+ p.toString()).build();	
+			return "You inserted "+ p.toString();	
 		} else {
-			return Response.serverError().entity("Error. "+ p.toString() + " already exists").build();
+			return "Error. "+ p.toString() + " already exists";
 		}
 		
 	}
@@ -49,22 +53,22 @@ public class PersonEndpoint {
 	@GET
 	@Path("/delete/{id}")
 	@Produces("text/plain")
-	public Response deletePerson(@PathParam("id") String str_id) {
+	public String deletePerson(@PathParam("id") String str_id) {
 		long id = Long.parseLong(str_id);
 		
 		Optional<Person> popt = personservice.getById(id);
 		if(popt.isEmpty()) {
-			return Response.serverError().entity("Error. There is no person with ID "+ id).build();
+			return "Error. There is no person with ID "+ id;
 		}
 		
 		Person p = popt.get();
 		
 		try {
 			personservice.deletePerson(p);
-			return Response.ok("Deleted person "+ p.toString()).build();	
+			return "Deleted person "+ p.toString();	
 		} catch(IllegalArgumentException ex) {
 			System.out.println(ex.toString());
-			return Response.serverError().entity("Some form of error occurred. Could not delete "+ p.toString()).build();
+			return "Some form of error occurred. Could not delete "+ p.toString();
 		}
 	}
 }
