@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
@@ -12,9 +13,10 @@ import ch.unige.pinfo.jpademo.model.Person;
 
 @ApplicationScoped
 @Transactional
+@Default
 public class PersonServiceImpl implements PersonService {
 
-	@PersistenceContext
+	@PersistenceContext(name="InmemoryPU")
 	EntityManager em;
 
 	@Override
