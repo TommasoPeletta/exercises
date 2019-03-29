@@ -33,6 +33,12 @@ public class Person implements Serializable {
 		this.lastname = last;
 	}
 
+	public Person(long id, String first, String last) {
+		this.id = id;
+		this.firstname = first;
+		this.lastname = last;
+	}
+
 	public long getId() {
 		return id;
 	}
